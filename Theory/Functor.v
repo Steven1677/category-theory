@@ -108,7 +108,7 @@ Next Obligation.
     rewrite <- (comp_assoc _ ((x0 y0)⁻¹ ∘ _)).
     rewrite <- e.
     apply e0.
-Qed.
+Defined.
 
 Lemma fun_equiv_to_fmap {C D : Category} {F G : C ⟶ D} (eqv : F ≈ G) :
   ∀ (x y : C) (f : x ~> y),
@@ -161,22 +161,41 @@ Instance fobj_respects `(F : C ⟶ D) :
 
 Ltac functor := unshelve (refine {| fobj := _; fmap := _ |}; simpl; intros).
 
-Program Definition Id {C : Category} : C ⟶ C := {|
+(* Program Instance Id {C : Category} : C ⟶ C := {
   fobj := fun x => x;
   fmap := fun _ _ f => f
-|}.
+}.
+ *)
+Definition Id {C : Category} : C ⟶ C.
+Proof. unshelve econstructor.
+       - exact (fun x => x).
+       - simpl. 
+         exact (fun _ _ f => f).
+       - simpl. easy.
+       - simpl. easy.
+       - simpl. easy.
+Defined.
 
 Arguments Id {C} /.
 
 Notation "Id[ C ]" := (@Id C) (at level 0, format "Id[ C ]") : functor_scope.
 
-Program Definition Compose {C D E : Category}
-        (F : D ⟶ E) (G : C ⟶ D) : C ⟶ E := {|
+(* Program Instance Compose {C D E : Category}
+        (F : D ⟶ E) (G : C ⟶ D) : C ⟶ E := {
   fobj := fun x => fobj (fobj x);
   fmap := fun _ _ f => fmap (fmap f)
-|}.
-Next Obligation. proper; rewrites; reflexivity. Qed.
-Next Obligation. intros; rewrite !fmap_comp; reflexivity. Qed.
+}.
+Next Obligation. proper; rewrites; reflexivity. Defined.
+Next Obligation. intros; rewrite !fmap_comp; reflexivity. Defined. *)
+
+Definition Compose {C D E : Category} (F : D ⟶ E) (G : C ⟶ D) : C ⟶ E.
+Proof. unshelve econstructor.
+       - exact (fun x => fobj (fobj x)).
+       - exact (fun _ _ f => fmap (fmap f)).
+       - proper; rewrites; reflexivity.
+       - intros; simpl; rewrite !fmap_id; reflexivity.
+       - intros; simpl; rewrite !fmap_comp; reflexivity.
+Defined.
 
 #[export] Hint Unfold Compose : categories.
 
@@ -210,7 +229,7 @@ Next Obligation.
     rewrite <- fmap_comp.
     rewrite !comp_assoc.
     reflexivity.
-Qed.
+Defined.
 
 Corollary fobj_Compose `(F : D ⟶ E) `(G : C ⟶ D) {x} :
   fobj[F ◯ G] x = fobj[F] (fobj[G] x).

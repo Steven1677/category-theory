@@ -56,7 +56,30 @@ Proof.
     rewrite <- from_adj_nat_r.
     rewrite <- from_adj_nat_l.
     cat.
-Qed.
+Defined.
+
+(* Definition adj_mon:F ∹ U → @Monad D (U ◯ F).
+Proof.
+  intros.
+  unshelve econstructor; simpl; intros.
+  - exact (transform[unit] _).
+  - exact (fmap (transform[counit] _)).
+  - symmetry.
+    apply (naturality[unit]).
+  - rewrite <- !fmap_comp.
+    apply fmap_respects.
+    symmetry.
+    apply (naturality[counit]).
+  - rewrite <- !fmap_comp.
+    srewrite (@counit_fmap_unit); cat.
+  - simpl.
+    srewrite (@fmap_counit_unit); cat.
+  - rewrite <- !fmap_comp.
+    apply fmap_respects.
+    symmetry.
+    apply (naturality[counit]).
+Defined.
+ *)
 
 Theorem Adjunction_Nat_Monad : F ∹ U → @Monad D (U ◯ F).
 Proof.
@@ -78,6 +101,6 @@ Proof.
     apply fmap_respects.
     symmetry.
     apply (naturality[counit]).
-Qed.
+Defined.
 
 End AdjunctionMonad.
